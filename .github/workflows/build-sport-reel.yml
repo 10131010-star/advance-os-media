@@ -26,20 +26,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
           python -m pip install 'Pillow>=11,<13'
-      - name: Fetch pinned reviewed source from advance-os-cloud
-        env:
-          SOURCE_REF: 99a483b4d5860042076115511c6af76264b39120
-        run: |
-          set -euo pipefail
-          mkdir -p build
-          base="https://raw.githubusercontent.com/10131010-star/advance-os-cloud/${SOURCE_REF}"
-          curl -fL --retry 3 --silent --show-error "${base}/ops/cloud/render_graphic_reel.py" -o build/render_graphic_reel.py
-          curl -fL --retry 3 --silent --show-error "${base}/production/reels/recipes/R-20261103-SPORT-EXPERIENCE.json" -o build/recipe.json
       - name: Render and verify exact reviewed QA bytes
         run: |
           set -euo pipefail
           mkdir -p videos/MEDIA-CAREER
-          python build/render_graphic_reel.py --recipe build/recipe.json --output build/sport.mp4
+          python tools/render_graphic_reel.py --recipe recipes/R-20261103-SPORT-EXPERIENCE.json --output build/sport.mp4
           echo "682fd98715d5c9a135290226aede794bcf8838532456030b46fe258efa52a5da  build/sport.mp4" | sha256sum -c -
           ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,pix_fmt -of json build/sport.mp4
           cp build/sport.mp4 videos/MEDIA-CAREER/ADVANCE_sport_experience_16s.mp4
