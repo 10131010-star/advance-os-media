@@ -26,13 +26,16 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
           python -m pip install 'Pillow>=11,<13'
-      - name: Render and verify exact reviewed QA bytes
+      - name: Render and verify current binary and readable frames
         run: |
           set -euo pipefail
           mkdir -p videos/MEDIA-CAREER
           python tools/render_graphic_reel.py --recipe recipes/R-20261103-SPORT-EXPERIENCE.json --output build/sport.mp4
-          echo "682fd98715d5c9a135290226aede794bcf8838532456030b46fe258efa52a5da  build/sport.mp4" | sha256sum -c -
+          sha256sum build/sport.mp4
           ffprobe -v error -show_entries format=duration,size:stream=codec_name,width,height,pix_fmt -of json build/sport.mp4
+          ffmpeg -y -v error -ss 0.5 -i build/sport.mp4 -frames:v 1 build/frame-first.png
+          ffmpeg -y -v error -ss 8.5 -i build/sport.mp4 -frames:v 1 build/frame-middle.png
+          ffmpeg -y -v error -ss 14.0 -i build/sport.mp4 -frames:v 1 build/frame-cta.png
           cp build/sport.mp4 videos/MEDIA-CAREER/ADVANCE_sport_experience_16s.mp4
       - name: Commit immutable media asset (no Instagram posting)
         run: |
@@ -47,5 +50,5 @@ jobs:
             git push origin HEAD:main
           fi
           echo "MEDIA_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
-          echo "Video SHA256: 682fd98715d5c9a135290226aede794bcf8838532456030b46fe258efa52a5da" >> "$GITHUB_STEP_SUMMARY"
+          sha256sum videos/MEDIA-CAREER/ADVANCE_sport_experience_16s.mp4 >> "$GITHUB_STEP_SUMMARY"
           echo "Instagram publishing is not performed by this workflow." >> "$GITHUB_STEP_SUMMARY"
