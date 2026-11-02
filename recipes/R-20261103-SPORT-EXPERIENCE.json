@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "draft_id": "R-20261103-SPORT-EXPERIENCE",
+  "status": "source_restored_qa_artifact_only_not_hosted_or_queued",
+  "persona": "競技経験から仕事を検討する人",
+  "objective": "qualified_career_consultation_dm",
+  "source_type": "original_graphic_cards",
+  "audio": "none",
+  "third_party_assets": [],
+  "duration_seconds": 16.5,
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "video_codec": "h264",
+    "pixel_format": "yuv420p"
+  },
+  "scenes": [
+    {
+      "seconds": 3,
+      "eyebrow": "競技の経験",
+      "heading": "仕事でどう伝える？",
+      "note": "「頑張った」だけで終わらせない。"
+    },
+    {
+      "seconds": 3,
+      "eyebrow": "まずは",
+      "heading": "変えた行動を書く",
+      "note": "練習の方法や順番を変えた場面は？"
+    },
+    {
+      "seconds": 3,
+      "eyebrow": "次に",
+      "heading": "工夫の理由を書く",
+      "note": "なぜ変えたのか、一言で説明。"
+    },
+    {
+      "seconds": 3,
+      "eyebrow": "そして",
+      "heading": "チームでの役割",
+      "note": "自分が担当したことを具体的に。"
+    },
+    {
+      "seconds": 4.5,
+      "eyebrow": "次の仕事を考える方へ",
+      "heading": "DM「経験相談」",
+      "note": "検討している時期も一言添えて。"
+    }
+  ],
+  "caption": "競技経験を、仕事で伝わる言葉に整理するヒント。\n\n「頑張った」だけでなく、何を変えたか・なぜ工夫したか・どんな役割を担ったかを、事実に沿って一つずつ書いてみてください。\n\n仕事選びを具体的に相談したい方は、DMで「経験相談」と検討時期を一言送ってください。\n\n運営：吉本。株式会社ADVANCEの採用・PBCの集客支援に関わっています。紹介は関係性を説明し、本人同意後に行います。\n※映像は独自制作の図解です。\n#競技経験 #キャリア相談 #仕事選び",
+  "local_render_sha256": "4436bbbf836509295b79727ab90951269488fb4130b005ca86a0e41fb11c5603",
+  "local_render_bytes": 508747,
+  "caveat": "Original local video verified SHA256 4436bbbf836509295b79727ab90951269488fb4130b005ca86a0e41fb11c5603 (508747 bytes, 16.52s, 1080x1920 H.264). Original binary is not hosted. Reproducible graphic-only QA renderer now exists at ops/cloud/render_graphic_reel.py; its output has a different SHA and must be separately verified. QA workflow uploads an artifact only; no immutable media URL, queue entry, or Instagram publication exists. 7-day limit remains 2 Reels.",
+  "qa_renderer": "ops/cloud/render_graphic_reel.py",
+  "qa_workflow": ".github/workflows/reel-graphic-qa.yml"
+}
