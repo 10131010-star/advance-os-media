@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "draft_id": "R-20261110-SALES-CONSULTATION",
+  "status": "reviewed_for_render",
+  "persona": "異業種から営業職への転職を検討している人",
+  "objective": "qualified_career_consultation_dm",
+  "source_type": "original_graphic_cards",
+  "audio": "none",
+  "third_party_assets": [],
+  "duration_seconds": 15.5,
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "video_codec": "h264",
+    "pixel_format": "yuv420p"
+  },
+  "scenes": [
+    {
+      "seconds": 2.5,
+      "eyebrow": "異業種から営業へ",
+      "heading": "何を伝えればいい？",
+      "note": "前職の肩書きより、行動を整理。"
+    },
+    {
+      "seconds": 3,
+      "eyebrow": "まずは",
+      "heading": "相手に何を聞いた？",
+      "note": "どんな話を聞いて、どう動いた？"
+    },
+    {
+      "seconds": 3,
+      "eyebrow": "次に",
+      "heading": "自分が工夫したこと",
+      "note": "説明や手順を変えた場面は？"
+    },
+    {
+      "seconds": 3,
+      "eyebrow": "面接で伝える順番",
+      "heading": "状況→行動→学び",
+      "note": "成果は事実だけ。盛らなくていい。"
+    },
+    {
+      "seconds": 4,
+      "eyebrow": "具体的に相談したい人へ",
+      "heading": "DM「営業相談」",
+      "note": "今の仕事と検討時期を一言。"
+    }
+  ],
+  "caption": "異業種から営業職への転職を考えたとき、「営業経験がないから…」と手が止まっていませんか。\n\n前職の肩書きを無理に営業らしくする必要はありません。どんな相手と関わったか、何を工夫したか、何を学んだか。まずは事実を一つずつ整理してみてください。\n\n仕事選びを具体的に相談したい方は、このアカウントのDMで「営業相談」と、検討している時期を一言送ってください。\n\n運営：吉本。株式会社ADVANCEの採用・PBCの集客支援に関わっています。紹介は関係性を説明し、本人同意後に行います。\n※映像は独自制作の図解です。特定の求人条件や採用結果を保証するものではありません。\n#営業職 #転職準備 #キャリア相談",
+  "experiment_note": "T02探索。冒頭で転職の悩みを明示し、行動例→DM導線へ。過去動画と複数要素が異なるため厳密なA/B比較ではない。",
+  "owner_scope": "Previously approved ongoing posts for @shigoto_sentakushi; new media must pass independent QA, immutable SHA and production queue gates before Instagram publication."
+}
