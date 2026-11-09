@@ -1,0 +1,120 @@
+name: ADVANCE original T02 sales Reel QA and immutable hosting
+on:
+  pull_request:
+    paths:
+      - 'recipes/R-20261110-SALES-CONSULTATION.json'
+      - '.github/workflows/build-sales-consultation-reel.yml'
+      - 'tools/render_graphic_reel.py'
+  push:
+    branches: [main]
+    paths:
+      - 'recipes/R-20261110-SALES-CONSULTATION.json'
+      - '.github/workflows/build-sales-consultation-reel.yml'
+      - 'tools/render_graphic_reel.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: media-sales-consultation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install local-only rendering dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+          python -m pip install 'Pillow>=11,<13'
+      - name: Check editorial and provenance constraints
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path("recipes/R-20261110-SALES-CONSULTATION.json").read_text())
+          assert r["draft_id"] == "R-20261110-SALES-CONSULTATION"
+          assert r["persona"] == "異業種から営業職への転職を検討している人"
+          assert r["source_type"] == "original_graphic_cards"
+          assert r["third_party_assets"] == [] and r["audio"] == "none"
+          assert len(r["scenes"]) == 5
+          assert 15 <= sum(s["seconds"] for s in r["scenes"]) <= 25
+          assert all(r["scenes"][i]["heading"] != r["scenes"][i+1]["heading"] for i in range(4))
+          assert all(k in r["caption"] for k in ("DM", "営業相談", "株式会社ADVANCE", "本人同意"))
+          assert "DM" in r["scenes"][-1]["heading"]
+          assert "応募" not in r["scenes"][-1]["heading"]
+          PY
+      - name: Render 15-25s silent original graphic and validate actual bytes
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          python tools/render_graphic_reel.py --recipe recipes/R-20261110-SALES-CONSULTATION.json --output build/sales-consultation.mp4
+          python - <<'PY'
+          import json,subprocess
+          from pathlib import Path
+          p=Path('build/sales-consultation.mp4')
+          q=json.loads(Path('build/sales-consultation.qa.json').read_text())
+          obj=json.loads(subprocess.check_output(['ffprobe','-v','error','-show_streams','-show_format','-of','json',str(p)]))
+          assert 15 <= float(obj['format']['duration']) <= 25
+          v=[s for s in obj['streams'] if s['codec_type']=='video']
+          a=[s for s in obj['streams'] if s['codec_type']=='audio']
+          assert len(v)==1 and not a and v[0]['codec_name']=='h264'
+          assert v[0]['width']==1080 and v[0]['height']==1920
+          assert q['audio']=='none' and q['bytes']==p.stat().st_size
+          PY
+          ffmpeg -y -v error -ss 0.5 -i build/sales-consultation.mp4 -frames:v 1 build/frame-first.png
+          ffmpeg -y -v error -ss 7.5 -i build/sales-consultation.mp4 -frames:v 1 build/frame-middle.png
+          ffmpeg -y -v error -ss 14.5 -i build/sales-consultation.mp4 -frames:v 1 build/frame-cta.png
+          sha256sum build/sales-consultation.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sales-reel-qa-${{ github.run_id }}
+          path: build/
+          retention-days: 30
+  host:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: qa
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: sales-reel-qa-${{ github.run_id }}
+          path: build/
+      - name: Verify artifact and host without posting to Instagram
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          p=Path('build/sales-consultation.mp4')
+          q=json.loads(Path('build/sales-consultation.qa.json').read_text())
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==q['video_sha256']
+          assert p.stat().st_size==q['bytes']
+          assert q['status']=='qa_artifact_only_not_hosted_or_queued'
+          PY
+          mkdir -p videos/MEDIA-CAREER
+          cp build/sales-consultation.mp4 videos/MEDIA-CAREER/ADVANCE_sales_consultation_15s.mp4
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add videos/MEDIA-CAREER/ADVANCE_sales_consultation_15s.mp4
+          if git diff --cached --quiet; then
+            echo 'Media already exists with same content'
+          else
+            git commit -m 'media: host original T02 sales consultation Reel (not Instagram publication)'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          echo "MEDIA_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          sha256sum videos/MEDIA-CAREER/ADVANCE_sales_consultation_15s.mp4 >> "$GITHUB_STEP_SUMMARY"
+          echo "Hosting is not Instagram posting or approval to bypass production queue." >> "$GITHUB_STEP_SUMMARY"
